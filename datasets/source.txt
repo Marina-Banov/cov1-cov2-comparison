@@ -1,3 +1,4 @@
-countries.csv, COV-2.csv: https://github.com/GoogleCloudPlatform/covid-19-open-data
+countries.csv: https://raw.githubusercontent.com/lukes/ISO-3166-Countries-with-Regional-Codes/master/all/all.csv
 COV-1.csv: https://www.kaggle.com/imdevskp/sars-outbreak-2003-complete-dataset
+COV-2.csv: https://github.com/GoogleCloudPlatform/covid-19-open-data
 countries-population.csv: https://datahub.io/JohnSnowLabs/population-figures-by-country

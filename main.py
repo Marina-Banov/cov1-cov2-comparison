@@ -1,5 +1,6 @@
 import csv
 import pandas as pd
+import matplotlib.pyplot as plt
 
 
 def load_dataset(file_name):
@@ -36,32 +37,51 @@ def clean_us_data():
     return
 
 
-def clean_cov1(cov):
-    cov = cov.rename(columns={'Date': 'date',
+def clean_cov1(df, countries):
+    # resolve conflicting country names
+    country_names = countries.name.unique()
+    problems = [c for c in df.Country.unique() if c not in country_names]
+    for p in problems:
+        p1 = p.split(', ')[0]
+        results = [c for c in country_names if c.find(p1) > -1 or p1.find(c) > -1]
+        df.loc[df.Country == p, 'Country'] = results[0] if len(results) > 0 else 'Korea, Republic of'
+
+    # rename columns
+    df = df.rename(columns={'Date': 'date',
                               'Country': 'country',
                               'Cumulative number of case(s)': 'total_confirmed',
                               'Number of deaths': 'total_deceased',
                               'Number recovered': 'total_recovered'})
-    cov.insert(5, 'total_tested', 'NaN')
-    cov.insert(6, 'new_confirmed', 'NaN')
-    cov.insert(7, 'new_deceased', 'NaN')
-    cov.insert(8, 'new_recovered', 'NaN')
-    cov.insert(9, 'new_tested', 'NaN')
-    return cov
+
+    # add missing columns
+    df.insert(5, 'total_tested', 'NaN')
+    df.insert(6, 'new_confirmed', 'NaN')
+    df.insert(7, 'new_deceased', 'NaN')
+    df.insert(8, 'new_recovered', 'NaN')
+    df.insert(9, 'new_tested', 'NaN')
+
+    return df
 
 
-def clean_cov2(cov, countries):
-    cov = cov.rename(columns={cov.columns[1]: 'country'})
-    cov = cov[cov.country.str.len() == 2]
-    cov['country'] = cov['country'].map(countries.set_index('key')['country_name'])
-    return cov
+def clean_cov2(df, countries):
+    # ignore region data
+    df = df[df.key.str.len() == 2]
+
+    # set country names by joining the two dataframes
+    countries = countries.rename(columns={'alpha-2': 'key'})
+    df = df.merge(countries[['key', 'name']]).drop('key', axis=1)
+
+    # rename column
+    df = df.rename(columns={'name': 'country'})
+
+    return df
 
 
 def print_group(group):
     for state, frame in group:
         print(f"First 5 entries for {state!r}")
         print("------------------------")
-        print(frame, end="\n\n")
+        print(frame.head(), end="\n\n")
 
 
 def add_cov1_info(data_grouped_by_country, dataset):
@@ -88,18 +108,31 @@ def add_cov1_info(data_grouped_by_country, dataset):
     return data_grouped_by_country
 
 
+def plot_group(g):
+    for state, frame in g:
+        print(frame)
+        plt.figure()
+        frame.plot()
+        plt.show()
+        break
+
+
 def main():
-    # countries = pd.read_csv('https://storage.googleapis.com/covid19-open-data/v2/index.csv')
-    # cov2_dataset = pd.read_csv('https://storage.googleapis.com/covid19-open-data/v2/epidemiology.csv')
     countries = pd.read_csv('datasets/countries.csv')
     cov1_dataset = pd.read_csv('datasets/COV-1.csv')
     cov2_dataset = pd.read_csv('datasets/COV-2.csv')
 
-    cov1_dataset = clean_cov1(cov1_dataset)
+    cov1_dataset = clean_cov1(cov1_dataset, countries)
     cov2_dataset = clean_cov2(cov2_dataset, countries)
 
     groups_1 = add_cov1_info(cov1_dataset.groupby('country'), cov1_dataset)
     groups_2 = cov2_dataset.groupby('country')
+
+    print_group(groups_1)
+    print_group(groups_2)
+    # plot_group(groups_1)
+    # fig, ax = plt.subplots(figsize=(8, 6))
+    # groups_2.plot(kind='kde', ax=ax)
 
     """
     cov1_dataset = load_dataset('datasets/COV-1-dataset.csv')
