@@ -1,0 +1,16 @@
+/*button*/
+QWidget#butt {
+    border: 2px solid black;
+    border-radius:4px;
+    background-color: rgb(200, 200, 200);
+    color: black;
+    height: 20px;
+    width: 100px;
+}
+
+/*MainWindow background*/
+QWidget
+{
+    color: silver;
+    background-color: #AAAAAA;
+}
