@@ -31,6 +31,7 @@ def clean_cov1(df, countries):
 def clean_cov2(df, countries):
     # ignore region data
     df = df[df.key.str.len() == 2]
+    # df.to_csv('datasets/experiment.csv', index=False)
 
     # set country names by joining the two dataframes
     countries = countries.rename(columns={'alpha-2': 'key'})
@@ -88,15 +89,15 @@ def plot_group(country):
 def init_data():
     countries = pd.read_csv('datasets/countries.csv')
     df1 = pd.read_csv('datasets/COV-1.csv', parse_dates=['Date'])
-    # df2 = pd.read_csv('datasets/COV-2.csv', parse_dates=['date'])
+    df2 = pd.read_csv('datasets/experiment.csv', parse_dates=['date'])
 
     df1 = clean_cov1(df1, countries)
-    # df2 = clean_cov2(df2, countries)
+    df2 = clean_cov2(df2, countries)
 
     g1 = add_cov1_info(df1.groupby('country'), df1)
-    # g2 = df2.groupby('country')
+    g2 = df2.groupby('country')
 
-    return g1, None
+    return g1, g2
 
 
 if __name__ == "__main__":
