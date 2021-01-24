@@ -1,5 +1,4 @@
 import sys
-from PyQt5 import uic
 from PyQt5.QtWidgets import QComboBox, QLabel
 from PyQt5.QtGui import QIcon, QFont
 from PyQt5.QtCore import Qt
@@ -8,6 +7,7 @@ import time
 import numpy as np
 from matplotlib.backends.qt_compat import QtCore, QtWidgets
 import mplcursors
+from matplotlib.ticker import MaxNLocator
 
 if QtCore.qVersion() >= "5.":
     from matplotlib.backends.backend_qt5agg import (
@@ -31,9 +31,6 @@ class MplCanvas(FigureCanvasQTAgg):
 class App(QtWidgets.QMainWindow):
 
     def __init__(self):
-        Form, Window = uic.loadUiType('app.ui')
-        window = Window()
-        window.show()
         super().__init__()
 
         self.title = 'Usporedba COVID-19 i SARS epidemije'
@@ -81,10 +78,7 @@ class App(QtWidgets.QMainWindow):
         # grid.addWidget(self.covGraph, 4, 0, 4, 4)
 
         self.sc = MplCanvas()
-        static_canvas = FigureCanvas(Figure(figsize=(4, 4)))
         self.grid.addWidget(self.sc, 4, 0, 4, 4)
-        self.addToolBar(NavigationToolbar(static_canvas, self))
-        self.cov1Total = static_canvas.figure.subplots()
         self.update_graph('Australia')
         self.mpl = self.set_mpl()
 
@@ -108,6 +102,7 @@ class App(QtWidgets.QMainWindow):
                                      y=['total_confirmed', 'total_deceased', 'total_recovered'],
                                      color=['r', 'k', 'g'],
                                      xlabel='')
+        self.sc.axes.yaxis.set_major_locator(MaxNLocator(integer=True))
         self.sc.figure.canvas.draw()
 
     def set_mpl(self):
