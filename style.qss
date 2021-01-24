@@ -1,16 +1,70 @@
-/*button*/
-QWidget#butt {
-    border: 2px solid black;
-    border-radius:4px;
-    background-color: rgb(200, 200, 200);
-    color: black;
-    height: 20px;
-    width: 100px;
+/*MainWindow background*/
+QWidget, QGridLayout
+{
+    color: #000000;
+    background-color: #E5E5E5;
+    font-size: 20;
 }
 
-/*MainWindow background*/
-QWidget
+QLabel
 {
-    color: silver;
-    background-color: #AAAAAA;
+    border: 0px solid black;
+    font-size: 20;
 }
+
+QComboBox {
+    background-color: #FFFFFF;
+    color: #000000;
+    width: 200px;
+    border: 1px solid #3A3939;
+    border-radius: 2px;
+    padding: 2px;
+    selection-background-color: #FFFFFF;
+    box-shadow: 5px 10px #888888;
+    text-align: center;
+    font-size: 20;
+}
+
+QComboBox:hover, QAbstractSpinBox:hover, QLineEdit:hover, QTextEdit:hover, QPlainTextEdit:hover, QAbstractView:hover,QTreeView:hover
+{
+    border: 1px solid #78879b;
+    color: #333333;
+}
+
+/*boja vec odabranog*/
+QComboBox:on
+{
+    background-color: #FFFFFF;          
+    padding-top: 3px;
+    padding-left: 4px;
+    selection-background-color: #FFFFFF;
+    width: 200px;
+}
+
+/*elementi u dropdownu*/
+QComboBox QAbstractItemView
+{
+    background-color: #FEFEFE;
+    border-radius: 2px;
+    border: 1px solid #444;
+    selection-background-color: #d9defa; /*element koji hoveram*/
+    selection-color: #333333;
+    text-align: center;
+    width: 200px;
+}
+
+QComboBox::drop-down
+{
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 15px;
+
+    border-left-width: 0px;
+    border-left-color: darkgray;
+    border-left-style: solid;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+
+
