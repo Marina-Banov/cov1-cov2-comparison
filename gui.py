@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QComboBox, QLabel
+from PyQt5.QtWidgets import QComboBox, QLabel, QLayout, QVBoxLayout
 from PyQt5.QtGui import QIcon, QFont
 from PyQt5.QtCore import Qt
 import data_init as dt
@@ -24,8 +24,8 @@ class App(QtWidgets.QMainWindow):
         super().__init__()
 
         self.title = 'Usporedba COVID-19 i SARS epidemije'
-        self.left = 50
-        self.top = 50
+        self.left = 0
+        self.top = 0
         self.width = 1080
         self.height = 720
 
@@ -42,24 +42,27 @@ class App(QtWidgets.QMainWindow):
         self.dropdown.setObjectName('dropdownList')
         self.dropdown.addItems(cov1.groups.keys())
         self.dropdown.resize(100, 50)
+        self.dropdown.setFont(QFont('Ubuntu', 11, QFont.Medium))
         self.dropdown.currentTextChanged.connect(self.on_combobox_changed)
 
         self.cov1Txt = QLabel('SARS')
         self.cov1Txt.setFont(QFont('Ubuntu', 18, QFont.Medium))
         self.cov2Txt = QLabel('COVID-19')
         self.cov2Txt.setFont(QFont('Ubuntu', 18, QFont.Medium))
-        self.cov1FirstCase = QLabel('Prvi slučaj: ')
-        self.cov1FirstCase.setFont(QFont('Ubuntu', 14, QFont.Medium))
-        self.cov2FirstCase = QLabel('Prvi slučaj: ')
-        self.cov2FirstCase.setFont(QFont('Ubuntu', 14, QFont.Medium))
+        # self.cov1FirstCase = QLabel('Prvi slučaj: ')
+        # self.cov1FirstCase.setFont(QFont('Ubuntu', 14, QFont.Medium))
+        # self.cov2FirstCase = QLabel('Prvi slučaj: ')
+        # self.cov2FirstCase.setFont(QFont('Ubuntu', 14, QFont.Medium))
+        
+        #mainLayout = QVBoxLayout(self)
 
         self.grid = QtWidgets.QGridLayout(self._main)
         self.grid.setSpacing(20)
-        self.grid.addWidget(self.dropdown, 0, 2, 1, 4)  # row, col, rowspan, colspan
-        self.grid.addWidget(self.cov1Txt, 2, 0, 1, 2)
-        self.grid.addWidget(self.cov2Txt, 2, 4, 1, 2)
-        self.grid.addWidget(self.cov1FirstCase, 3, 0, 1, 2)
-        self.grid.addWidget(self.cov2FirstCase, 3, 4, 1, 2)
+        self.grid.addWidget(self.dropdown, 1, 3, 1, 2)  # row, col, rowspan, colspan
+        self.grid.addWidget(self.cov1Txt, 3, 2, 1, 1)
+        self.grid.addWidget(self.cov2Txt, 3, 5, 1, 1)
+        # self.grid.addWidget(self.cov1FirstCase, 3, 0, 1, 2)
+        # self.grid.addWidget(self.cov2FirstCase, 3, 4, 1, 2)
 
         self.sc = FigureCanvasQTAgg(Figure(figsize=(4, 4)))
         self.sc.figure.add_subplot(2, 2, 1)
@@ -70,8 +73,10 @@ class App(QtWidgets.QMainWindow):
         self.update_all_graphs('Australia')
         self.set_mpl()
 
-        self.grid.setAlignment(Qt.AlignCenter)
+        #self.grid.setAlignment(Qt.AlignVCenter)
+        self.grid.setContentsMargins(50, 50, 50, 50)
         self.setLayout(self.grid)
+        self.showMaximized()
 
     def update_all_graphs(self, country):
         self.sc.figure.set_canvas(self.sc)
@@ -84,6 +89,7 @@ class App(QtWidgets.QMainWindow):
         update_graph(g2, totals, all_axes[1])
         update_graph(g1, new, all_axes[2])
         update_graph(g2, new, all_axes[3])
+        self.sc.figure.subplots_adjust(hspace=0.5, wspace=0.2)
         self.sc.figure.canvas.draw()
 
     def set_mpl(self):
@@ -104,7 +110,7 @@ class App(QtWidgets.QMainWindow):
 def update_graph(group, data, ax):
     ax.clear()
     group.plot(ax=ax, x='date', y=data,
-               color=['r', 'k', 'g'], xlabel='')
+               color=['r', 'k', 'g'])#, xlabel='')
     ax.yaxis.set_major_locator(MaxNLocator(integer=True))
 
 
@@ -118,4 +124,5 @@ if __name__ == '__main__':
     app.show()
     app.activateWindow()
     app.raise_()
-    qapp.exec_()
+    #qapp.exec_()
+    qapp.quit()
