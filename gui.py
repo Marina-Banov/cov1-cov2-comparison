@@ -34,7 +34,7 @@ class App(QtWidgets.QMainWindow):
 
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
-        self.setWindowIcon(QIcon('img/covid'))
+        self.setWindowIcon(QIcon('windowIcon'))
         self._main = QtWidgets.QWidget()
         self.setCentralWidget(self._main)
 
