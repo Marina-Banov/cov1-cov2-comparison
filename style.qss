@@ -92,7 +92,7 @@ QScrollBar:vertical {
     QScrollBar::sub-line:vertical {
         background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
         stop: 0  rgb(32, 47, 130), stop: 0.5 rgb(32, 47, 130),  stop:1 rgb(32, 47, 130));
-        height: 0 px;
+        height: 0;
         subcontrol-position: top;
         subcontrol-origin: margin;
     }

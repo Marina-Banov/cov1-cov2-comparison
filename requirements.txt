@@ -1,5 +1,4 @@
-matplotlib==3.3.3
-pandas==1.2.1
+matplotlib~=3.3.3
+pandas~=1.2.1
 PyQt5~=5.15.2
-numpy~=1.19.5
 mplcursors~=0.4

@@ -78,7 +78,6 @@ def add_cov1_info(grouped, dataset):
 
 def plot_group(country):
     plt.figure()
-    # plt.plot(country['date'], country['new_confirmed'])
     country.plot(x='date',
                  y=['total_confirmed', 'total_deceased', 'total_recovered'],
                  color=['r', 'k', 'g'],
@@ -102,5 +101,5 @@ def init_data():
 
 if __name__ == "__main__":
     cov1, cov2 = init_data()
-    # plot_group(cov2.get_group('China'))
-    # print(cov2.get_group('China').head())
+    plot_group(cov2.get_group('China'))
+    print(cov2.get_group('China').head())
