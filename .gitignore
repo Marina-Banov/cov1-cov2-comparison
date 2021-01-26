@@ -136,4 +136,4 @@ cython_debug/
 *.csv
 !datasets/countries.csv
 !datasets/COV-1.csv
-!datasets/experiment.csv
+!datasets/COV-2.csv

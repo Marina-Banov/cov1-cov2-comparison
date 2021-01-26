@@ -26,17 +26,17 @@ class App(QtWidgets.QMainWindow):
         self._main = QtWidgets.QWidget()
         self.setCentralWidget(self._main)
 
-        self.dropdown = QComboBox()
-        self.dropdown.setObjectName('dropdownList')
-        self.dropdown.addItems(cov2.groups.keys())
-        self.dropdown.resize(100, 50)
-        self.dropdown.setFont(QFont('Ubuntu', 11, QFont.Medium))
-        self.dropdown.currentTextChanged.connect(self.on_combobox_changed)
+        dropdown = QComboBox()
+        dropdown.setObjectName('dropdownList')
+        dropdown.addItems(cov2.groups.keys())
+        dropdown.resize(100, 50)
+        dropdown.setFont(QFont('Ubuntu', 11, QFont.Medium))
+        dropdown.currentTextChanged.connect(self.on_combobox_changed)
 
-        self.cov1Txt = QLabel('SARS')
-        self.cov1Txt.setFont(QFont('Ubuntu', 18, QFont.Medium))
-        self.cov2Txt = QLabel('COVID-19')
-        self.cov2Txt.setFont(QFont('Ubuntu', 18, QFont.Medium))
+        cov1Txt = QLabel('SARS')
+        cov1Txt.setFont(QFont('Ubuntu', 18, QFont.Medium))
+        cov2Txt = QLabel('COVID-19')
+        cov2Txt.setFont(QFont('Ubuntu', 18, QFont.Medium))
 
         self.canvas = FigureCanvasQTAgg(Figure(figsize=(4, 4)))
         self.canvas.figure.add_subplot(2, 2, 1)
@@ -47,14 +47,14 @@ class App(QtWidgets.QMainWindow):
         self.update_all_graphs(list(cov2.groups.keys())[0])
         set_mpl(self.canvas.figure.get_axes())
 
-        self.grid = QtWidgets.QGridLayout(self._main)
-        self.grid.setSpacing(20)
-        self.grid.addWidget(self.dropdown, 1, 3, 1, 2)  # row, col, rowspan, colspan
-        self.grid.addWidget(self.cov1Txt, 3, 2, 1, 1)
-        self.grid.addWidget(self.cov2Txt, 3, 5, 1, 1)
-        self.grid.addWidget(self.canvas, 4, 0, 8, 8)
-        self.grid.setContentsMargins(50, 50, 50, 50)
-        self.setLayout(self.grid)
+        grid = QtWidgets.QGridLayout(self._main)
+        grid.setSpacing(20)
+        grid.addWidget(dropdown, 1, 3, 1, 2)  # row, col, rowspan, colspan
+        grid.addWidget(cov1Txt, 3, 2, 1, 1)
+        grid.addWidget(cov2Txt, 3, 5, 1, 1)
+        grid.addWidget(self.canvas, 4, 0, 8, 8)
+        grid.setContentsMargins(50, 50, 50, 50)
+        self.setLayout(grid)
 
         self.showMaximized()
 
