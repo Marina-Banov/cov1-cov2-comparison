@@ -89,8 +89,7 @@ def set_mpl(all_axes):
         mpl = mplcursors.cursor(all_axes[i], hover=2,
                                 highlight=True, highlight_kwargs={'color': 'b', 'lw': 3})
         mpl.connect('add', lambda sel: sel.annotation.get_bbox_patch().set(fc='white', alpha=1))
-        mpl.connect('add', lambda sel: sel.annotation.set_text(
-            '{} ({})'.format(int(sel.target[0]), int(sel.target[1]))))
+        mpl.connect('add', lambda sel: sel.annotation.set_text(int(sel.target[1])))
 
 
 def update_graph(group, data, ax, available_data):
