@@ -1,6 +1,8 @@
 import sys
-from PyQt5.QtWidgets import QComboBox, QLabel
+from PyQt5.QtWidgets import QComboBox
 from PyQt5.QtGui import QIcon, QFont
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 from matplotlib.backends.qt_compat import QtCore, QtWidgets
 if QtCore.qVersion() >= "5.":
     from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
@@ -33,11 +35,6 @@ class App(QtWidgets.QMainWindow):
         dropdown.setFont(QFont('Ubuntu', 11, QFont.Medium))
         dropdown.currentTextChanged.connect(self.on_combobox_changed)
 
-        cov1Txt = QLabel('SARS')
-        cov1Txt.setFont(QFont('Ubuntu', 18, QFont.Medium))
-        cov2Txt = QLabel('COVID-19')
-        cov2Txt.setFont(QFont('Ubuntu', 18, QFont.Medium))
-
         self.canvas = FigureCanvasQTAgg(Figure(figsize=(4, 4)))
         self.canvas.figure.add_subplot(2, 2, 1)
         self.canvas.figure.add_subplot(2, 2, 2)
@@ -50,9 +47,7 @@ class App(QtWidgets.QMainWindow):
         grid = QtWidgets.QGridLayout(self._main)
         grid.setSpacing(20)
         grid.addWidget(dropdown, 1, 3, 1, 2)  # row, col, rowspan, colspan
-        grid.addWidget(cov1Txt, 3, 2, 1, 1)
-        grid.addWidget(cov2Txt, 3, 5, 1, 1)
-        grid.addWidget(self.canvas, 4, 0, 8, 8)
+        grid.addWidget(self.canvas, 3, 0, 8, 8)
         grid.setContentsMargins(50, 50, 50, 50)
         self.setLayout(grid)
 
@@ -66,15 +61,15 @@ class App(QtWidgets.QMainWindow):
 
         try:
             g1 = cov1.get_group(country)
-            update_graph(g1, totals, all_axes[0], True)
-            update_graph(g1, new, all_axes[2], True)
+            update_graph(g1, totals, all_axes[0], 'SARS', True)
+            update_graph(g1, new, all_axes[2], '', True)
         except KeyError as e:
-            update_graph(None, None, all_axes[0], False)
-            update_graph(None, None, all_axes[2], False)
+            update_graph(None, None, all_axes[0], 'SARS', False)
+            update_graph(None, None, all_axes[2], '', False)
 
         g2 = cov2.get_group(country)
-        update_graph(g2, totals, all_axes[1], True)
-        update_graph(g2, new, all_axes[3], True)
+        update_graph(g2, totals, all_axes[1], 'COVID-19', True)
+        update_graph(g2, new, all_axes[3], '', True)
 
         self.canvas.figure.subplots_adjust(hspace=0.5, wspace=0.2)
         self.canvas.figure.canvas.draw()
@@ -92,19 +87,26 @@ def set_mpl(all_axes):
         mpl.connect('add', lambda sel: sel.annotation.set_text(int(sel.target[1])))
 
 
-def update_graph(group, data, ax, available_data):
+def update_graph(group, data, ax, title, available_data):
     ax.clear()
     if available_data:
         group.plot(ax=ax, x='date', y=data,
-                   color=['r', 'k', 'g'])  # , xlabel='')
+                   color=['r', 'k', 'g'], xlabel='', rot=0)
+        ax.xaxis.set_major_locator(mdates.MonthLocator())
+        ax.xaxis.set_major_formatter(mdates.DateFormatter('%b\n%Y'))
         ax.yaxis.set_major_locator(MaxNLocator(integer=True))
     else:
-        ax.text(0.3, 0.6, 'Nije zabilježen niti jedan slučaj', fontsize=12)
+        ax.text(0.3, 0.5, 'Nije zabilježen niti jedan slučaj', fontsize=12)
+        ax.set_xticklabels([])
+        ax.set_yticklabels([])
+    if title != '':
+        ax.set_title(title, pad=30)
 
 
 if __name__ == '__main__':
     cov1, cov2 = dt.init_data()
 
+    plt.rc('axes', titlesize=22)
     qapp = QtWidgets.QApplication.instance()
     if not qapp:
         qapp = QtWidgets.QApplication(sys.argv)
